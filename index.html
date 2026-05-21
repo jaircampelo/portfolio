@@ -278,16 +278,30 @@
       margin-top: -16px;
       display: inline-flex; align-items: center; gap: 8px;
       padding: 7px 16px; border-radius: 99px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-accent);
+      /* Mantém a cor de fundo padrão do seu tema escuro */
+      background: var(--bg-secondary); 
+      /* Substitui a borda amarela por um verde sutil com transparência */
+      border: 1px solid rgba(46, 213, 115, 0.25); 
       font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      color: var(--gold-500); letter-spacing: 0.08em; text-transform: uppercase;
+      /* Cor do texto alterada para um verde nítido */
+      color: #2ed573; 
+      letter-spacing: 0.08em; text-transform: uppercase;
       box-shadow: var(--shadow);
     }
     .availability-dot {
       width: 7px; height: 7px; border-radius: 50%;
-      background: var(--gold-500);
+      /* Bolinha piscando no mesmo tom de verde */
+      background: #2ed573; 
       animation: pulse 2s ease-in-out infinite;
+    }
+    /* Ajuste de contraste para quando o tema claro estiver ativo */
+    [data-theme="light"] .availability-tag {
+      color: #26a65b; /* Verde ligeiramente mais escuro e legível */
+      border-color: rgba(38, 166, 91, 0.3);
+      background: #f1f2f6; /* Garante um fundo contrastante se necessário */
+    }
+    [data-theme="light"] .availability-dot {
+      background: #26a65b;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
