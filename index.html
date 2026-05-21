@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jair Campelo — Analytics Engineer</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --blue-900: #0a2d54;
+      --blue-800: #0e3d72;
+      --blue-700: #135290;
+      --blue-600: #1a69b8;
+      --blue-500: #2180d8;
+      --blue-400: #5aa3e5;
+      --blue-300: #93c3f0;
+
+      --gold-700: #b87510;
+      --gold-600: #d4880f;
+      --gold-500: #eb9b13;
+      --gold-400: #f0ad3a;
+      --gold-300: #f5c468;
+
+      --light-100: #ffffff;
+      --light-200: #f2f4f5;
+      --light-300: #e2e6e9;
+      --light-400: #c8cfd4;
+
+      --dark-900: #0d0f11;
+      --dark-800: #1b1e21;
+      --dark-700: #252a2e;
+      --dark-600: #2f3539;
+      --dark-500: #3c4349;
+      --dark-400: #555e66;
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 32px;
+
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: var(--dark-800);
+      --bg-secondary: var(--dark-700);
+      --bg-tertiary: var(--dark-600);
+      --bg-card: var(--dark-700);
+      --bg-card-hover: var(--dark-600);
+      --text-primary: var(--light-200);
+      --text-secondary: var(--light-400);
+      --text-muted: var(--dark-400);
+      --border: rgba(255,255,255,0.07);
+      --border-accent: rgba(235,155,19,0.3);
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.6);
+      --nav-bg: rgba(27,30,33,0.9);
+      --hero-glow: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(19,82,144,0.25) 0%, transparent 70%);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: var(--light-200);
+      --bg-secondary: var(--light-100);
+      --bg-tertiary: var(--light-300);
+      --bg-card: var(--light-100);
+      --bg-card-hover: var(--light-300);
+      --text-primary: var(--dark-800);
+      --text-secondary: var(--dark-500);
+      --text-muted: var(--light-400);
+      --border: rgba(0,0,0,0.08);
+      --border-accent: rgba(19,82,144,0.25);
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
+      --nav-bg: rgba(242,244,245,0.9);
+      --hero-glow: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(19,82,144,0.1) 0%, transparent 70%);
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background var(--transition-slow), color var(--transition-slow);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--blue-700); border-radius: 99px; }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition-slow), border-color var(--transition-slow);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+      color: var(--text-primary);
+    }
+    .nav-brand svg { width: 28px; height: 32px; flex-shrink: 0; }
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .nav-links a {
+      font-size: 0.875rem; font-weight: 500;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 2px; background: var(--gold-500);
+      transform: scaleX(0); transition: transform var(--transition);
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-controls { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: transparent; color: var(--text-secondary);
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .nav-btn:hover {
+      border-color: var(--blue-700); color: var(--text-primary);
+      background: rgba(19,82,144,0.1);
+    }
+    .nav-btn .flag { font-size: 1rem; }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: grid; place-items: center;
+      padding: 100px 2rem 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--hero-glow);
+      pointer-events: none;
+    }
+    #hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 80%, rgba(19,82,144,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(235,155,19,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      max-width: 1200px; width: 100%; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 4rem; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--gold-500); letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .hero-label::before {
+      content: ''; width: 32px; height: 1px; background: var(--gold-500);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
+    }
+    .hero-title span { color: var(--blue-500); }
+    .hero-sub {
+      font-size: 1.0625rem; line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 520px; margin-bottom: 2.5rem;
+    }
+    .hero-cta {
+      display: flex; flex-wrap: wrap; gap: 12px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; border-radius: var(--radius-md);
+      background: var(--blue-700); color: #fff;
+      font-weight: 600; font-size: 0.9rem;
+      transition: all var(--transition); border: 1px solid var(--blue-700);
+    }
+    .btn-primary:hover {
+      background: var(--blue-600); border-color: var(--blue-600);
+      transform: translateY(-2px); box-shadow: 0 8px 24px rgba(19,82,144,0.35);
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 20px; border-radius: var(--radius-md);
+      background: transparent; color: var(--text-secondary);
+      font-weight: 500; font-size: 0.9rem;
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+    }
+    .btn-outline:hover {
+      border-color: var(--text-secondary); color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+    /* ─── hero photo ─── */
+    .hero-photo-wrapper {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+      position: relative;
+    }
+    .hero-photo-ring {
+      position: relative;
+      width: 300px; height: 300px;
+    }
+    .hero-photo-ring::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(var(--gold-500) 0deg, var(--blue-700) 120deg, transparent 180deg, var(--gold-500) 360deg);
+      animation: spin 8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-photo-ring::after {
+      content: '';
+      position: absolute; inset: -1px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+    }
+    .hero-photo {
+      position: relative; z-index: 1;
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--bg-tertiary);
+    }
+    .hero-photo img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top center;
+    }
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: var(--text-muted);
+      font-family: var(--font-mono); font-size: 0.7rem; text-align: center; padding: 1rem;
+    }
+    .photo-placeholder svg { width: 48px; height: 48px; opacity: 0.4; }
+    .availability-tag {
+      position: relative; z-index: 2;
+      margin-top: -16px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 16px; border-radius: 99px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-accent);
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+      color: var(--gold-500); letter-spacing: 0.08em; text-transform: uppercase;
+      box-shadow: var(--shadow);
+    }
+    .availability-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--gold-500);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ─── SECTIONS ───────────────────────────────────────────── */
+    section { padding: 100px 2rem; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header { margin-bottom: 4rem; }
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+      color: var(--gold-500); letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-eyebrow::before {
+      content: '//'; color: var(--blue-500); opacity: 0.7;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .section-divider {
+      width: 48px; height: 3px;
+      background: linear-gradient(90deg, var(--gold-500), var(--blue-700));
+      border-radius: 99px; margin-top: 1rem;
+    }
+
+    /* alternating bg */
+    section:nth-child(even) { background: var(--bg-secondary); }
+
+    /* ─── SOBRE ──────────────────────────────────────────────── */
+    .sobre-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
+    }
+    .sobre-text p {
+      color: var(--text-secondary); line-height: 1.8; font-size: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .sobre-text p:last-child { margin-bottom: 0; }
+    .sobre-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      transition: all var(--transition);
+    }
+    .stat-card:hover {
+      border-color: var(--border-accent); transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+    .stat-number {
+      font-family: var(--font-display); font-size: 2.2rem; font-weight: 700;
+      color: var(--gold-500); line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;
+      font-family: var(--font-mono); letter-spacing: 0.06em;
+    }
+
+    /* ─── EXPERIÊNCIA ────────────────────────────────────────── */
+    .exp-timeline { position: relative; padding-left: 2rem; }
+    .exp-timeline::before {
+      content: '';
+      position: absolute; left: 0; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold-500), var(--blue-700), transparent);
+    }
+    .exp-item {
+      position: relative; margin-bottom: 3rem; padding-left: 2rem;
+    }
+    .exp-item:last-child { margin-bottom: 0; }
+    .exp-dot {
+      position: absolute; left: -2.5rem; top: 6px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--bg-primary); border: 2px solid var(--gold-500);
+      box-shadow: 0 0 0 4px rgba(235,155,19,0.1);
+      transition: all var(--transition);
+    }
+    .exp-item:hover .exp-dot {
+      background: var(--gold-500); box-shadow: 0 0 0 6px rgba(235,155,19,0.15);
+    }
+    .exp-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.75rem 2rem;
+      transition: all var(--transition);
+    }
+    .exp-card:hover {
+      border-color: var(--border-accent); box-shadow: var(--shadow);
+      transform: translateX(4px);
+    }
+    .exp-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 0.5rem; flex-wrap: wrap; gap: 8px;
+    }
+    .exp-role {
+      font-family: var(--font-display); font-size: 1.125rem; font-weight: 600;
+      color: var(--text-primary);
+    }
+    .exp-period {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--gold-500); background: rgba(235,155,19,0.1);
+      padding: 4px 10px; border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+    .exp-company {
+      font-size: 0.875rem; color: var(--blue-400); font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .exp-bullets { display: flex; flex-direction: column; gap: 6px; }
+    .exp-bullets li {
+      font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
+      padding-left: 1.25rem; position: relative;
+    }
+    .exp-bullets li::before {
+      content: '▸'; position: absolute; left: 0;
+      color: var(--gold-500); font-size: 0.7rem; top: 3px;
+    }
+
+    /* ─── SKILLS ─────────────────────────────────────────────── */
+.skills-container { display: flex; flex-direction: column; gap: 3rem; }
+
+/* Cards de categoria (lista vertical) */
+.skills-cards-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.skill-category-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem 1.75rem;
+  display: flex; align-items: flex-start; gap: 1.25rem;
+  transition: all var(--transition);
+}
+.skill-category-card:hover {
+  border-color: var(--border-accent); transform: translateX(4px);
+  box-shadow: var(--shadow);
+}
+.skill-category-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  background: rgba(19,82,144,0.12); border: 1px solid rgba(19,82,144,0.2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--blue-400);
+}
+.skill-category-icon svg { width: 22px; height: 22px; }
+.skill-category-icon img { width: 22px; height: 22px; filter: brightness(0) invert(0.6); }
+.skill-category-body { flex: 1; }
+.skill-category-name {
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 0.75rem;
+}
+.skills-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: var(--radius-sm);
+  background: var(--bg-tertiary); border: 1px solid var(--border);
+  font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);
+  transition: all var(--transition); cursor: default;
+}
+.skill-chip:hover {
+  border-color: var(--blue-700); color: var(--text-primary);
+  background: rgba(19,82,144,0.12); transform: translateY(-2px);
+}
+.skill-chip.highlight {
+  border-color: rgba(235,155,19,0.3); color: var(--gold-400);
+  background: rgba(235,155,19,0.06);
+}
+.skill-chip.highlight:hover { background: rgba(235,155,19,0.12); }
+
+.skill-category-icon.bi       { background: rgba(243,186,47,0.12); border-color: rgba(243,186,47,0.25); color: #f3ba2f; }
+.skill-category-icon.db       { background: rgba(0,150,255,0.12);  border-color: rgba(0,150,255,0.25);  color: #0096ff; }
+.skill-category-icon.code     { background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.25); color: #34d399; }
+.skill-category-icon.de       { background: rgba(168,85,247,0.12); border-color: rgba(168,85,247,0.25); color: #a855f7; }
+.skill-category-icon.git      { background: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.25); color: #f97316; }
+.skill-category-icon.design   { background: rgba(236,72,153,0.12); border-color: rgba(236,72,153,0.25); color: #ec4899; }
+
+.skill-chip.bi     { border-color: rgba(243,186,47,0.3);  color: #f3ba2f;  background: rgba(243,186,47,0.06); }
+.skill-chip.db     { border-color: rgba(0,150,255,0.3);   color: #0096ff;  background: rgba(0,150,255,0.06); }
+.skill-chip.code   { border-color: rgba(52,211,153,0.3);  color: #34d399;  background: rgba(52,211,153,0.06); }
+.skill-chip.de     { border-color: rgba(168,85,247,0.3);  color: #a855f7;  background: rgba(168,85,247,0.06); }
+.skill-chip.git    { border-color: rgba(249,115,22,0.3);  color: #f97316;  background: rgba(249,115,22,0.06); }
+.skill-chip.design { border-color: rgba(236,72,153,0.3);  color: #ec4899;  background: rgba(236,72,153,0.06); }
+
+/* Competências (mantém chips soltos) */
+.skills-group-title {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+  color: var(--blue-400); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Idiomas */
+.lang-cards { display: flex; gap: 1rem; flex-wrap: wrap; }
+.lang-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem 1.75rem;
+  display: flex; align-items: center; gap: 1rem;
+  transition: all var(--transition); min-width: 260px;
+}
+.lang-card:hover { border-color: var(--border-accent); transform: translateY(-3px); box-shadow: var(--shadow); }
+.lang-flag { font-size: 2rem; line-height: 1; }
+.lang-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+.lang-level { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.lang-level span { color: var(--gold-500); font-weight: 500; }
+.lang-dots { display: flex; gap: 5px; margin-top: 6px; }
+.lang-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border);
+}
+.lang-dot.filled { background: var(--gold-500); }
+
+    /* ─── PROJETOS ───────────────────────────────────────────── */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+      gap: 2rem;
+    }
+    .project-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      transition: all var(--transition);
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover {
+      border-color: var(--border-accent); box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+    .project-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--bg-tertiary);
+      position: relative; overflow: hidden;
+    }
+    .project-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform var(--transition-slow);
+    }
+    .project-card:hover .project-thumb img { transform: scale(1.04); }
+    .thumb-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; color: var(--text-muted);
+      font-family: var(--font-mono); font-size: 0.7rem; text-align: center; padding: 1.5rem;
+    }
+    .thumb-placeholder svg { width: 40px; height: 40px; opacity: 0.35; }
+    .project-dashboard-wrapper {
+      width: 100%; aspect-ratio: 16/9; position: relative;
+    }
+    .project-dashboard-wrapper iframe {
+      width: 100%; height: 100%; border: none;
+      pointer-events: none;
+    }
+    .project-dashboard-overlay {
+      position: absolute; inset: 0;
+      background: transparent; cursor: default;
+    }
+    .project-body { padding: 1.75rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+    .project-meta {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .project-tag {
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
+      color: var(--gold-500); background: rgba(235,155,19,0.08);
+      padding: 3px 9px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(235,155,19,0.2); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .project-links { display: flex; gap: 8px; }
+    .project-link-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: var(--radius-sm);
+      font-size: 0.72rem; font-weight: 500;
+      border: 1px solid var(--border); color: var(--text-secondary);
+      transition: all var(--transition);
+    }
+    .project-link-btn:hover { border-color: var(--blue-700); color: var(--blue-400); }
+    .project-title {
+      font-family: var(--font-display); font-size: 1.15rem; font-weight: 600;
+      color: var(--text-primary); line-height: 1.3;
+    }
+    .project-desc {
+      font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7;
+    }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+    .stack-tag {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      padding: 3px 8px; border-radius: 4px;
+      background: rgba(19,82,144,0.12); color: var(--blue-400);
+      border: 1px solid rgba(19,82,144,0.2);
+    }
+    .dashboard-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--blue-400); font-weight: 500;
+      transition: color var(--transition);
+    }
+    .dashboard-link:hover { color: var(--blue-300); }
+
+    /* ─── FORMAÇÃO ───────────────────────────────────────────── */
+    .formacao-grid {
+      display: grid; grid-template-columns: 1fr 1.8fr; gap: 4rem;
+    }
+    .formacao-title {
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+      color: var(--gold-500); letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .edu-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.75rem;
+    }
+    .edu-degree {
+      font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 4px;
+    }
+    .edu-institution { font-size: 0.875rem; color: var(--blue-400); font-weight: 500; }
+    .edu-period {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--text-muted); margin-top: 6px;
+    }
+    .certs-list { display: flex; flex-direction: column; gap: 10px; }
+    .cert-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1rem 1.25rem;
+      transition: all var(--transition);
+    }
+    .cert-item:hover {
+      border-color: var(--border-accent); transform: translateX(4px);
+    }
+    .cert-name {
+      font-size: 0.875rem; font-weight: 500; color: var(--text-primary);
+    }
+    .cert-issuer {
+      font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .cert-year {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold-500);
+      white-space: nowrap;
+    }
+
+    /* ─── CONTATO ────────────────────────────────────────────── */
+    #contato { text-align: left; }
+    .contact-sub {
+      font-size: 1rem; color: var(--text-secondary); max-width: 520px;
+      margin: 1rem 0 3rem; line-height: 1.7;
+    }
+    .contact-card:hover {
+      border-color: var(--blue-700); color: var(--text-primary);
+      transform: translateY(-4px); box-shadow: var(--shadow);
+      background: rgba(19,82,144,0.06);
+    }
+    .contact-sub {
+      font-size: 1rem; color: var(--text-secondary);
+      line-height: 1.7; margin: 0;
+    }
+    .contact-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2rem 2.5rem;
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .contact-sub {
+      font-size: 1rem; color: var(--text-secondary);
+      line-height: 1.7; margin: 0 0 0.75rem;
+    }
+    .contact-response {
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--gold-500); display: flex; align-items: center; gap: 6px;
+    }
+    .contact-response::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold-500); flex-shrink: 0;
+    }
+    .contact-grid {
+      display: flex; gap: 0.75rem;
+    }
+    .contact-card {
+      flex: 1;
+      display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px;
+      padding: 0.875rem 1rem; border-radius: var(--radius-md);
+      background: var(--bg-tertiary); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 0.825rem; font-weight: 500;
+      transition: all var(--transition);
+    }
+    .contact-card:hover {
+      border-color: var(--blue-700); color: var(--text-primary);
+      transform: translateY(-3px); box-shadow: var(--shadow);
+      background: rgba(19,82,144,0.08);
+    }
+    .contact-card svg { width: 18px; height: 18px; color: var(--blue-400); flex-shrink: 0; transition: color var(--transition); }
+    .contact-card:hover svg { color: var(--gold-500); }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      padding: 2rem; text-align: center;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-label { justify-content: center; }
+      .hero-sub { margin: 0 auto 2.5rem; }
+      .hero-cta { justify-content: center; }
+      .hero-photo-wrapper { order: -1; }
+      .hero-photo-ring { width: 220px; height: 220px; }
+      .sobre-grid, .formacao-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: repeat(2, 1fr); }
+      .projects-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 70px 1.25rem; }
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-brand">
+      <!-- Logo SVG inline -->
+      <svg width="129" height="149" viewBox="0 0 129 149" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="68.5168" height="23.7174" transform="matrix(-0.720271 0.693693 0.720271 0.693693 49.3507 0)" fill="#E4950F"/>
+        <rect width="98.3296" height="23.2674" transform="matrix(-0.999999 0.00174723 0.00188368 0.999998 98.3298 47.3596)" fill="#E4950F"/>
+        <rect width="68.5168" height="23.7174" transform="matrix(0.720271 -0.693693 -0.720271 -0.693693 79.3368 148.896)" fill="#E4950F"/>
+        <rect width="98.3296" height="23.2674" transform="matrix(0.999999 -0.00174723 -0.00188368 -0.999998 30.3576 101.537)" fill="#E4950F"/>
+      </svg>
+      Jair Campelo
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#experiencia">Experiência</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#formacao">Formação</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+
+    <div class="nav-controls">
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()" title="Mudar tema">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-label">Light</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-grid">
+    <div class="hero-content fade-in">
+      <div class="hero-label">Analytics Engineer</div>
+      <h1 class="hero-title">
+        Transformando dados<br/>
+        em <span>decisões estratégicas</span>
+      </h1>
+      <p class="hero-sub">
+        Analytics Engineer construindo as camadas entre o dado bruto e a decisão através de pipelines confiáveis, modelos bem definidos e dashboards executivos com rastreabilidade e escala.
+      </p>
+      <div class="hero-cta">
+        <a href="assets/curriculo-jair-campelo.pdf" class="btn-primary" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Currículo PDF
+        </a>
+        <a href="https://github.com/jaircampelo" class="btn-outline" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="https://linkedin.com/in/jaircampelo" class="btn-outline" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-photo-wrapper fade-in" style="animation-delay: 0.2s">
+      <div class="hero-photo-ring">
+        <div class="hero-photo">
+          <img src="assets/perfil_jaircampelo.png" alt="Jair Campelo" />
+        </div>
+      </div>
+      <div class="availability-tag">
+        <span class="availability-dot"></span>
+        Disponível para oportunidades
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOBRE ─────────────────────────────────────────────────── -->
+<section id="sobre">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <div class="section-eyebrow">Sobre Mim</div>
+      <h2 class="section-title">Quem sou eu</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="sobre-grid">
+      <div class="sobre-text fade-in">
+        <p>Sou Engenheiro de Pesca formado pela UFPA em transição estruturada para a área de dados, com atuação em projetos de BI, ETL e Engenharia de Dados. Minha trajetória combina rigor analítico de uma formação técnico-científica com a capacidade de comunicar insights com clareza para diferentes públicos.</p>
+        <p>Como Consultor Técnico na FIEPA, desenvolvi dashboards estratégicos em Power BI e automatizei processos de transformação de dados com Power Query. Na Fundação Solidaridad, atuei como Analista Agropecuário II, aplicando análise de dados em projetos de desenvolvimento sustentável.</p>
+        <p>Estou construindo uma carreira sólida em Analytics Engineering, com projetos que cobrem desde pipelines ETL com Arquitetura Medalhão até dashboards avançados com modelagem dimensional e DAX avançado.</p>
+      </div>
+      <div class="sobre-stats fade-in">
+        <div class="stat-card">
+          <div class="stat-number">4+</div>
+          <div class="stat-label">Projetos no portfolio</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">7+</div>
+          <div class="stat-label">Certificações</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EXPERIÊNCIA ───────────────────────────────────────────── -->
+<section id="experiencia">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <div class="section-eyebrow">Experiência</div>
+      <h2 class="section-title">Trajetória profissional</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="exp-timeline fade-in">
+      <!-- Mais recente primeiro -->
+      <div class="exp-item">
+        <div class="exp-dot"></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <div class="exp-role">Analista Agropecuário II</div>
+            <div class="exp-period">FEV 2025 — SET 2025</div>
+          </div>
+          <div class="exp-company">Fundação Solidaridad · Altamira, PA</div>
+          <ul class="exp-bullets">
+            <li>Análise e gestão de dados agropecuários em projetos de desenvolvimento sustentável.</li>
+            <li>Suporte técnico com coleta, tratamento e estruturação de dados de campo.</li>
+            <li>Elaboração de relatórios analíticos para apoio à tomada de decisão.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-dot"></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <div class="exp-role">Consultor Técnico</div>
+            <div class="exp-period">NOV 2023 — JAN 2025</div>
+          </div>
+          <div class="exp-company">FIEPA — Federação das Indústrias do Pará · Altamira, PA</div>
+          <ul class="exp-bullets">
+            <li>Desenvolvimento de dashboards estratégicos em Power BI para a Diretoria.</li>
+            <li>Automação de processos de tratamento e transformação de dados com Power Query.</li>
+            <li>Criação de Mapa de Riscos institucional via Power BI.</li>
+            <li>Modelagem e construção de relatórios analíticos para diferentes áreas.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SKILLS ────────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <div class="section-eyebrow">Skills</div>
+      <h2 class="section-title">Tecnologias & competências</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="skills-container">
+
+      <!-- Cards de categoria -->
+      <div class="skills-cards-list fade-in">
+
+        <div class="skill-category-card">
+          <div class="skill-category-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <div class="skill-category-body">
+            <div class="skill-category-name">BI & Analytics</div>
+            <div class="skills-chips">
+              <span class="skill-chip">Power BI</span>
+              <span class="skill-chip">Excel</span>
+              <span class="skill-chip">Google Sheets</span>
+              <span class="skill-chip">Looker Studio</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category-card">
+          <div class="skill-category-icon db">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+          </div>
+          <div class="skill-category-body">
+            <div class="skill-category-name">Banco de Dados</div>
+            <div class="skills-chips">
+              <span class="skill-chip">SQL Server</span>
+              <span class="skill-chip">PostgreSQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category-card">
+          <div class="skill-category-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="skill-category-body">
+            <div class="skill-category-name">Programação</div>
+            <div class="skills-chips">
+              <span class="skill-chip">Python</span>
+              <span class="skill-chip">PySpark</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category-card">
+          <div class="skill-category-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="skill-category-body">
+            <div class="skill-category-name">Data Engineering</div>
+            <div class="skills-chips">
+              <span class="skill-chip">Microsoft Fabric</span>
+              <span class="skill-chip">dbt</span>
+              <span class="skill-chip">Apache Airflow</span>
+              <span class="skill-chip">Docker</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category-card">
+          <div class="skill-category-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="21"/></svg>
+          </div>
+          <div class="skill-category-body">
+            <div class="skill-category-name">Versionamento</div>
+            <div class="skills-chips">
+              <span class="skill-chip">Git</span>
+              <span class="skill-chip">GitHub</span>
+              <span class="skill-chip">Azure DevOps</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category-card">
+          <div class="skill-category-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <div class="skill-category-body">
+            <div class="skill-category-name">Design</div>
+            <div class="skills-chips">
+              <span class="skill-chip">Figma</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Competências Técnicas -->
+      <div class="fade-in">
+        <div class="skills-group-title">Competências Técnicas</div>
+        <div class="skills-chips">
+          <span class="skill-chip">DAX Avançado</span>
+          <span class="skill-chip">Modelagem Dimensional</span>
+          <span class="skill-chip">SQL Avançado</span>
+          <span class="skill-chip">ETL / ELT</span>
+          <span class="skill-chip">Arquitetura Medalhão</span>
+          <span class="skill-chip">Power Query (M)</span>
+          <span class="skill-chip">Data Visualization</span>
+          <span class="skill-chip">Análise de KPIs</span>
+          <span class="skill-chip">Dashboards Executivos</span>
+          <span class="skill-chip">Storytelling com Dados</span>
+          <span class="skill-chip">REST API</span>
+          <span class="skill-chip">Pandas</span>
+          <span class="skill-chip">CI/CD</span>
+        </div>
+      </div>
+
+      <!-- Idiomas -->
+      <div class="fade-in">
+        <div class="skills-group-title">Idiomas</div>
+        <div class="lang-cards">
+          <div class="lang-card">
+            <div class="lang-flag">🇧🇷</div>
+            <div>
+              <div class="lang-name">Português</div>
+              <div class="lang-level"><span>Nativo</span></div>
+              <div class="lang-dots">
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot filled"></div>
+              </div>
+            </div>
+          </div>
+          <div class="lang-card">
+            <div class="lang-flag">🇺🇸</div>
+            <div>
+              <div class="lang-name">Inglês</div>
+              <div class="lang-level">Intermediário · <span>Leitura e compreensão avançadas</span></div>
+              <div class="lang-dots">
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot filled"></div>
+                <div class="lang-dot"></div>
+                <div class="lang-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROJETOS ──────────────────────────────────────────────── -->
+<section id="projetos">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <div class="section-eyebrow">Projetos</div>
+      <h2 class="section-title">Projetos em destaque</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- Projeto 1 — fish-trade-analytics open source -->
+      <div class="project-card fade-in">
+        <div class="project-thumb">
+          <!--
+            ─────────────────────────────────────────────────────
+            INSTRUÇÃO: Substitua pelo embed do dashboard Power BI:
+
+            <div class="project-dashboard-wrapper">
+              <iframe
+                src="https://app.powerbi.com/view?r=eyJrIjoiMTgzNDkyZmEtNGIxZi00NjQ4LThhYTUtODM5Y2E4OThhNTVlIiwidCI6ImViMDcwNTQxLTQ4YWEtNDE4My05MmEyLTFkZWFjMTZmM2M0ZSJ9&pageName=044d0f7f0669a5695c9a"
+                allowFullScreen
+              ></iframe>
+              <div class="project-dashboard-overlay"></div>
+            </div>
+
+            Ou use uma imagem de preview: assets/img/fish-trade-preview.png
+            ─────────────────────────────────────────────────────
+          -->
+          <img src="assets/fish_trade_analytics_preview.png" alt="Análise da Balança Comercial do Pescado" />
+        </div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-tag">End-to-End · Open Source</span>
+            <div class="project-links">
+              <a href="https://github.com/jaircampelo/fish-trade-analytics/blob/main/README.md" target="_blank" class="project-link-btn">Docs</a>
+              <a href="https://github.com/jaircampelo/fish-trade-analytics" target="_blank" class="project-link-btn">Repo</a>
+            </div>
+          </div>
+          <div class="project-title">Análise da Balança Comercial do Pescado (End-to-End)</div>
+          <p class="project-desc">Da ingestão ao dashboard: solução completa de pipeline de dados utilizando ferramentas open source, partindo da ingestão de dados do comércio internacional de pescado da API COMEX STAT, até a elaboração de um dashboard no Power BI demonstrando as principais KPIs envolvidas no setor.</p>
+          <div class="project-stack">
+            <span class="stack-tag">Power BI</span>
+            <span class="stack-tag">Airflow</span>
+            <span class="stack-tag">dbt</span>
+            <span class="stack-tag">Docker</span>
+            <span class="stack-tag">Python</span>
+            <span class="stack-tag">PostgreSQL</span>
+          </div>
+          <a href="https://app.powerbi.com/view?r=eyJrIjoiMTgzNDkyZmEtNGIxZi00NjQ4LThhYTUtODM5Y2E4OThhNTVlIiwidCI6ImViMDcwNTQxLTQ4YWEtNDE4My05MmEyLTFkZWFjMTZmM2M0ZSJ9&pageName=044d0f7f0669a5695c9a" target="_blank" class="dashboard-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Abrir dashboard no Power BI
+          </a>
+        </div>
+      </div>
+
+      <!-- Projeto 2 — fish-trade-analytics Fabric -->
+      <div class="project-card fade-in">
+        <div class="project-thumb">
+          <!--
+            ─────────────────────────────────────────────────────
+            INSTRUÇÃO: Adicione uma imagem de preview:
+            assets/img/fish-trade-fabric-preview.png
+            ─────────────────────────────────────────────────────
+          -->
+          <img src="assets/fish_trade_analytics_mf_preview.png" alt="Análise da Balança Comercial do Pescado (Microsoft Fabric)" />
+        </div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-tag">Microsoft Fabric · CI/CD</span>
+            <div class="project-links">
+              <a href="https://github.com/jaircampelo/fish-trade-analytics-fabric/blob/main/README.md" target="_blank" class="project-link-btn">Docs</a>
+              <a href="https://github.com/jaircampelo/fish-trade-analytics-fabric" target="_blank" class="project-link-btn">Repo</a>
+            </div>
+          </div>
+          <div class="project-title">Análise da Balança Comercial do Pescado (Microsoft Fabric)</div>
+          <p class="project-desc">Reimplementação do pipeline de análise do comércio internacional de pescado dentro do ecossistema Microsoft Fabric, com integração nativa entre Data Pipelines, Notebooks PySpark, Lakehouse e Power BI Direct Lake. Inclui automação de deploy via CI/CD com GitHub Actions e pyfabricops, garantindo versionamento, rastreabilidade e reprodutibilidade do ambiente de dados.</p>
+          <div class="project-stack">
+            <span class="stack-tag">Microsoft Fabric</span>
+            <span class="stack-tag">PySpark</span>
+            <span class="stack-tag">Power BI</span>
+            <span class="stack-tag">Python</span>
+            <span class="stack-tag">pyfabricops</span>
+            <span class="stack-tag">GitHub Actions</span>
+            <span class="stack-tag">CI/CD</span>
+            <span class="stack-tag">Azure DevOps</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projeto 3 — DRE Controladoria -->
+      <div class="project-card fade-in">
+        <div class="project-thumb">
+          <!--
+            ─────────────────────────────────────────────────────
+            INSTRUÇÃO: Adicione uma imagem de preview:
+            assets/img/dre-controladoria-preview.png
+            ─────────────────────────────────────────────────────
+          -->
+          <img src="assets/dre_preview.png" alt="Dashboard de Controladoria — DRE" />
+        </div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-tag">Power BI · DAX</span>
+            <div class="project-links">
+              <a href="https://github.com/jaircampelo/mycoffee-dre-controladoria/blob/main/README.md" target="_blank" class="project-link-btn">Docs</a>
+              <a href="https://github.com/jaircampelo/mycoffee-dre-controladoria" target="_blank" class="project-link-btn">Repo</a>
+            </div>
+          </div>
+          <div class="project-title">Dashboard de Controladoria — DRE</div>
+          <p class="project-desc">Painel de Controladoria em Power BI para análise de DRE de empresa fictícia. Contempla análise YoY, comparação com metas orçadas, Análise Vertical de deduções e Análise Bridge, com metodologia ESI e Data Storytelling.</p>
+          <div class="project-stack">
+            <span class="stack-tag">Power BI</span>
+            <span class="stack-tag">DAX</span>
+            <span class="stack-tag">Power Query (M)</span>
+          </div>
+          <a href="https://app.powerbi.com/view?r=eyJrIjoiZTE5MzQyMjMtZjEwNi00YThhLTkyNjAtOGY1NmFjYzk0YWJkIiwidCI6ImViMDcwNTQxLTQ4YWEtNDE4My05MmEyLTFkZWFjMTZmM2M0ZSJ9" target="_blank" class="dashboard-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Abrir dashboard no Power BI
+          </a>
+        </div>
+      </div>
+
+      <!-- Projeto 4 — Apache Hop DW -->
+      <div class="project-card fade-in">
+        <div class="project-thumb">
+          <!--
+            ─────────────────────────────────────────────────────
+            INSTRUÇÃO: Adicione uma imagem de preview:
+            assets/img/apache-hop-preview.png
+            ─────────────────────────────────────────────────────
+          -->
+          <img src="assets/apache_hop_preview.png" alt="Data Warehouse com Apache Hop" />
+        </div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-tag">ETL · Data Warehouse</span>
+            <div class="project-links">
+              <a href="https://github.com/jaircampelo/xtrail-vendas/blob/main/README.md" target="_blank" class="project-link-btn">Docs</a>
+              <a href="https://github.com/jaircampelo/xtrail-vendas" target="_blank" class="project-link-btn">Repo</a>
+            </div>
+          </div>
+          <div class="project-title">Data Warehouse com Apache Hop</div>
+          <p class="project-desc">Solução de ETL criada do zero com Apache Hop seguindo a Arquitetura Medalhão (bronze, silver e gold), desde a ingestão até o carregamento do modelo dimensional em SQL Server. Inclui monitoramento automático via e-mail e bot Telegram sinalizando sucesso ou falha na execução.</p>
+          <div class="project-stack">
+            <span class="stack-tag">Apache Hop</span>
+            <span class="stack-tag">SQL Server</span>
+            <span class="stack-tag">REST API</span>
+            <span class="stack-tag">Telegram Bot</span>
+            <span class="stack-tag">Modelagem Dimensional</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FORMAÇÃO ──────────────────────────────────────────────── -->
+<section id="formacao">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <div class="section-eyebrow">Formação</div>
+      <h2 class="section-title">Formação & Certificações</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="formacao-grid fade-in">
+      <div>
+        <div class="formacao-title">Formação Acadêmica</div>
+        <div class="edu-card">
+          <div class="edu-degree">Bacharelado em Engenharia de Pesca</div>
+          <div class="edu-institution">Universidade Federal do Pará — UFPA</div>
+          <div class="edu-period">2016 — 2022</div>
+        </div>
+      </div>
+      <div>
+        <div class="formacao-title">Certificações</div>
+        <div class="certs-list">
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">Power BI Fundamentals</div>
+              <div class="cert-issuer">Xperiun</div>
+            </div>
+            <div class="cert-year">2025</div>
+          </div>
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">Python para Análise de Dados</div>
+              <div class="cert-issuer">Xperiun</div>
+            </div>
+            <div class="cert-year">2025</div>
+          </div>
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">SQL Avançado</div>
+              <div class="cert-issuer">Xperiun · Data Analyst Professional</div>
+            </div>
+            <div class="cert-year">2026</div>
+          </div>
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">Apache Hop</div>
+              <div class="cert-issuer">Xperiun · Data Analyst Professional</div>
+            </div>
+            <div class="cert-year">2026</div>
+          </div>
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">Power Query Avançado</div>
+              <div class="cert-issuer">Xperiun · Data Analyst Professional</div>
+            </div>
+            <div class="cert-year">2026</div>
+          </div>
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">Modelagem de Dados Avançado</div>
+              <div class="cert-issuer">Xperiun · Data Analyst Professional</div>
+            </div>
+            <div class="cert-year">2026</div>
+          </div>
+          <div class="cert-item">
+            <div>
+              <div class="cert-name">DAX Avançado</div>
+              <div class="cert-issuer">Xperiun · Data Analyst Professional</div>
+            </div>
+            <div class="cert-year">2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTATO ───────────────────────────────────────────────── -->
+<section id="contato">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <div class="section-eyebrow">Contato</div>
+      <h2 class="section-title">Vamos conversar</h2>
+      <div class="section-divider" style="margin: 1rem 0 3rem;"></div>
+    </div>
+    <div class="contact-box">
+      <div>
+        <p class="contact-sub fade-in">Interessado em colaborar, contratar ou apenas trocar ideias sobre dados? Estou a um clique de distância.</p>
+        <div class="contact-response">Respondo em até 24h</div>
+      </div>
+      <div class="contact-grid fade-in">
+        <a href="mailto:jair@jaircampelo.com.br" class="contact-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          E-mail
+        </a>
+        <a href="https://wa.me/5591980612086" class="contact-card" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a href="https://linkedin.com/in/jaircampelo" class="contact-card" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  © 2026 Jair Junior Bezerra Campelo. Todos os direitos reservados.
+</footer>
+
+<!-- ─── JS ────────────────────────────────────────────────────── -->
+<script>
+  /* ── Theme ── */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+    document.getElementById('theme-label').textContent = isDark ? 'Dark' : 'Light';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+
+  /* ── Lang (placeholder — expandir com i18n depois) ── */
+  let currentLang = 'pt';
+  function toggleLang() {
+    currentLang = currentLang === 'pt' ? 'en' : 'pt';
+    document.getElementById('lang-flag').textContent = currentLang === 'pt' ? '🇧🇷' : '🇺🇸';
+    document.getElementById('lang-label').textContent = currentLang === 'pt' ? 'PT' : 'EN';
+    document.documentElement.lang = currentLang === 'pt' ? 'pt-BR' : 'en';
+    // i18n translations to be added
+  }
+
+  /* ── Persist theme ── */
+  (function() {
+    const saved = localStorage.getItem('theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      if (saved === 'light') {
+        document.getElementById('theme-icon').textContent = '🌙';
+        document.getElementById('theme-label').textContent = 'Dark';
+      }
+    }
+  })();
+
+  /* ── Scroll fade-in ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  /* ── Active nav link ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${current}`
+        ? 'var(--text-primary)' : '';
+    });
+  });
+</script>
+</body>
+</html>
